@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import initDB from "./config/db";
 import { usersRoute } from "./modules/users/users.routes";
+import { authRoutes } from "./modules/auth/auth.routes";
 export const app = express();
 
 
@@ -10,7 +11,9 @@ initDB();
 // parse
 app.use(express.json());
 
-// get all the user route
+// auth route
+app.use("/api/v1/auth", authRoutes)
+// users route
 app.use("/api/v1/users", usersRoute);
 
 app.get('/', (req: Request, res: Response) => {

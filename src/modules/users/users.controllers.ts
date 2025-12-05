@@ -10,10 +10,11 @@ const getAllUsers = async (req: Request, res: Response) => {
             message: "Users retrieved successfully",
             data: result.rows
         })
-    } catch (error) {
+    } catch (error: any) {
         res.status(401).json({
             success: false,
             message: "Missing or invalid authentication token",
+            errors: error.message
         })
     }
 }

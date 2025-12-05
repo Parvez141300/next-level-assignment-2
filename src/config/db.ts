@@ -13,9 +13,9 @@ const initDB = async () => {
             id SERIAL PRIMARY KEY,
             name VARCHAR(100) NOT NULL,
             email VARCHAR(100) NOT NULL UNIQUE CHECK (email = LOWER(email)),
-            password VARCHAR(50) NOT NULL CHECK (LENGTH(password) >= 6),
+            password VARCHAR(100) NOT NULL CHECK (LENGTH(password) >= 6),
             phone VARCHAR(20) NOT NULL,
-            role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'customer'))
+            role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'customer'))
             )
             `);
 
@@ -23,11 +23,11 @@ const initDB = async () => {
         await pool.query(`
             CREATE TABLE IF NOT EXISTS vehicles(
             id SERIAL PRIMARY KEY,
-            vehicle_name VARCHAR(50) NOT NULL,
+            vehicle_name VARCHAR(100) NOT NULL,
             type VARCHAR(20) CHECK (type IN ('car', 'bike', 'van', 'SUV')),
             registration_number INT NOT NULL UNIQUE,
             daily_rent_price INT NOT NULL CHECK (daily_rent_price > 0),
-            availability_status VARCHAR(50) NOT NULL CHECK (availability_status IN ('available', 'booked'))
+            availability_status VARCHAR(20) NOT NULL CHECK (availability_status IN ('available', 'booked'))
             )
             `);
 

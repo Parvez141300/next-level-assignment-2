@@ -37,7 +37,28 @@ const getAllVehicles = async (req: Request, res: Response) => {
     }
 }
 
+// get single vehicle req and res handler
+const getSingleVehicle = async (req: Request, res: Response) => {
+    const {vehicleId} = req.params;
+    const vId = parseInt(vehicleId as string);
+    try {
+        const result = await vehiclesServices.getSingleVehicleFromDB(vId);
+        res.status(200).json({
+            success: true,
+            message: "Vehicle retrieved successfully",
+            data: result.rows[0]
+        })
+    } catch (error: any) {
+        res.status(404).json({
+            success: false,
+            message: "Resource doesn't exist",
+            errors: error.message
+        })
+    }
+}
+
 export const vehiclesControllers = {
     createVehicle,
     getAllVehicles,
+    getSingleVehicle,
 }

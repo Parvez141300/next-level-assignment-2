@@ -10,13 +10,21 @@ const createVehicleIntoDB = async (payload: Record<string, unknown>) => {
     return result;
 }
 
-// get all vehicles
+// get all vehicles from db
 const getAllVehiclesFromDB = async () => {
     const result = await pool.query(`SELECT * FROM vehicles`);
+    return result;
+}
+
+// get single vehicles from db
+const getSingleVehicleFromDB = async (vehicleId: number) => {
+    const result = await pool.query(`SELECT * FROM vehicles WHERE id=$1`, [vehicleId]);
+
     return result;
 }
 
 export const vehiclesServices = {
     createVehicleIntoDB,
     getAllVehiclesFromDB,
+    getSingleVehicleFromDB,
 }

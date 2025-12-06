@@ -19,6 +19,37 @@ const getAllUsers = async (req: Request, res: Response) => {
     }
 }
 
+// update a user req and res handle
+const updateUser = async (req: Request, res: Response) => {
+    const uId = parseInt(req.params.userId as string);
+    try {
+        const result = await usersServices.updateUserIntoDB(req.body, uId) as any;
+
+        if (result) {
+            res.status(200).json({
+                success: true,
+                message: "User updated successfully",
+                data: result.rows[0],
+            })
+        }
+        else {
+            res.status(404).json({
+                success: false,
+                message: "failed to update user info",
+                errors: "Resource doesn't exist"
+            })
+        }
+
+    } catch (error: any) {
+        res.status(401).json({
+            success: false,
+            message: "Missing or invalid authentication token",
+            errors: error.message
+        })
+    }
+}
+
 export const usersController = {
     getAllUsers,
+    updateUser,
 }

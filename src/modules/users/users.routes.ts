@@ -6,5 +6,7 @@ const router = Router();
 
 // get all users route
 router.get("/", auth("admin"), usersController.getAllUsers);
+// update a user route
+router.put("/:userId", auth("admin", "customer"), usersController.updateUser);
 
 export const usersRoute = router;

@@ -39,7 +39,7 @@ const getAllVehicles = async (req: Request, res: Response) => {
 
 // get single vehicle req and res handler
 const getSingleVehicle = async (req: Request, res: Response) => {
-    const {vehicleId} = req.params;
+    const { vehicleId } = req.params;
     const vId = parseInt(vehicleId as string);
     try {
         const result = await vehiclesServices.getSingleVehicleFromDB(vId);
@@ -57,8 +57,29 @@ const getSingleVehicle = async (req: Request, res: Response) => {
     }
 }
 
+// update a vehicle req and res handler
+const updateVehicle = async (req: Request, res: Response) => {
+    const { vehicleId } = req.params;
+    const vId = parseInt(vehicleId as string);
+    try {
+        const result = await vehiclesServices.updateVehicleIntoDB(req.body, vId);
+        res.status(200).json({
+            success: true,
+            message: "Vehicle updated successfully",
+            data: result.rows[0]
+        })
+    } catch (error: any) {
+        res.status(401).json({
+            success: false,
+            message: "Missing or invalid authentication token",
+            errors: error.message
+        })
+    }
+}
+
 export const vehiclesControllers = {
     createVehicle,
     getAllVehicles,
     getSingleVehicle,
+    updateVehicle
 }

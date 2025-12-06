@@ -16,7 +16,7 @@ const auth = (...roles: string[]) => {
         }
 
         const decoded = jwt.verify(jwtToken, config.jwt_secret as string) as JwtPayload;
-        const user = await pool.query('SELECT * FROM users WHERE email=$1', [decoded.email]);
+        const user = await pool.query('SELECT * FROM Users WHERE email=$1', [decoded.email]);
 
         if (user.rows.length === 0) {
             return res.status(404).json({

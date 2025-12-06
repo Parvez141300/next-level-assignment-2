@@ -8,5 +8,7 @@ const router = Router();
 router.get("/", auth("admin"), usersController.getAllUsers);
 // update a user route
 router.put("/:userId", auth("admin", "customer"), usersController.updateUser);
+// delete a user route
+router.delete("/:userId", auth("admin"), usersController.deleteUser);
 
 export const usersRoute = router;

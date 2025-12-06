@@ -17,3 +17,6 @@ Technology Stack:
 Setup:
 
 Usage Instructions:
+
+unfinished:
+Delete a user (only if no active bookings exist)

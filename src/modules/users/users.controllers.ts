@@ -49,7 +49,28 @@ const updateUser = async (req: Request, res: Response) => {
     }
 }
 
+// delete a user req and res handle
+const deleteUser = async (req: Request, res: Response) => {
+    const uId = parseInt(req.params.userId as string);
+    try {
+        const result = await usersServices.deleteUserFromDB(uId);
+        if (result.rows.length > 0) {
+            res.status(200).json({
+                success: true,
+                message: "User deleted successfully",
+            })
+        }
+    } catch (error: any) {
+        res.status(404).json({
+            success: false,
+            message: "Resource doesn't exist",
+            errors: error.message
+        })
+    }
+}
+
 export const usersController = {
     getAllUsers,
     updateUser,
+    deleteUser,
 }

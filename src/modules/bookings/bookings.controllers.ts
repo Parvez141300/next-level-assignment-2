@@ -63,7 +63,58 @@ const getAllBooking = async (req: Request, res: Response) => {
     }
 }
 
+// get customer booking req and res handle
+const getUserBooking = async (req: Request, res: Response) => {
+    const userId = parseInt(req.params.userId as string);
+    try {
+        const result = await bookingsServices.getUserBookingFromDB(userId);
+            
+        res.status(200).json({
+            success: true,
+            message: "Your bookings retrieved successfully",
+            data: result,
+        })
+    } catch (error: any) {
+        res.status(403).json({
+            success: false,
+            message: "Valid token but insufficient permissions",
+            errors: error.message
+        })
+    }
+}
+
+// update booking req and res handle
+const updateBooking = async (req: Request, res: Response) => {
+    const bId = parseInt(req.params.bookingId as string);
+    try {
+        const result = await bookingsServices.updateBookingIntoDB(bId, req.body);
+            
+        if(result?.role === "customer"){
+            res.status(200).json({
+                success: true,
+                message: "Booking cancelled successfully",
+                data: result?.result,
+            })
+        }
+        else if(result?.role === "admin"){
+            res.status(200).json({
+                success: true,
+                message: "Booking marked as returned. Vehicle is now available",
+                data: result?.result,
+            })
+        }
+    } catch (error: any) {
+        res.status(403).json({
+            success: false,
+            message: "Valid token but insufficient permissions",
+            errors: error.message
+        })
+    }
+}
+
 export const bookingsControllers = {
     createBooking,
     getAllBooking,
+    getUserBooking,
+    updateBooking,
 }

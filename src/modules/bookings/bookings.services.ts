@@ -102,7 +102,92 @@ const getAllBookingsFromDB = async () => {
     return formatted;
 }
 
+// get user booking from db
+const getUserBookingFromDB = async (userId: number) => {
+    const result = await pool.query(`
+        SELECT
+        Bookings.id,
+        Bookings.vehicle_id,
+        Bookings.rent_start_date,
+        Bookings.rent_end_date,
+        Bookings.total_price,
+        Bookings.status,
+
+        Vehicles.vehicle_name,
+        Vehicles.registration_number,
+        Vehicles.type
+        FROM
+        Bookings
+        INNER JOIN Vehicles ON Bookings.vehicle_id = Vehicles.id
+        WHERE Bookings.customer_id = $1
+        `, [userId]);
+
+    const formatted = result.rows.map(row => ({
+        id: row.id,
+        vehicle_id: row.vehicle_id,
+        rent_start_date: row.rent_start_date,
+        rent_end_date: row.rent_end_date,
+        total_price: row.total_price,
+        status: row.status,
+        vehicle: {
+            vehicle_name: row.vehicle_name,
+            registration_number: row.registration_number,
+            type: row.type
+        }
+    }))
+
+    return formatted;
+}
+
+// update booking into db
+const updateBookingIntoDB = async (bookingId: number, payload: Record<string, unknown>) => {
+
+    const getRole = await pool.query(`
+        SELECT
+        Users.role,
+        Bookings.vehicle_id
+        FROM Bookings
+        INNER JOIN Users ON Bookings.customer_id = Users.id
+        WHERE Bookings.id = $1
+        `, [bookingId]);
+
+    console.log(getRole.rows[0]);
+    let bookingResult;
+    if (getRole.rows[0].role === "customer") {
+        bookingResult = await pool.query(`
+            UPDATE Bookings 
+            SET status = $1
+            WHERE id = $2 RETURNING *
+            `, [payload.status, bookingId]);
+        return { result: bookingResult.rows[0], role: getRole.rows[0].role };
+    }
+    else if (getRole.rows[0].role === "admin") {
+
+        bookingResult = await pool.query(`
+            UPDATE Bookings 
+            SET status = $1
+            WHERE id = $2 RETURNING *
+            `, [payload.status, bookingId]);
+        const vehicle_id = getRole.rows[0].vehicle_id;
+        const vehicleResult = await pool.query(`
+            UPDATE Vehicles
+            SET availability_status = $1
+            WHERE id = $2 RETURNING availability_status
+            `, ['available', vehicle_id])
+
+        const finalResult = {
+            ...bookingResult.rows[0],
+            vehicle: {
+                availability_status: vehicleResult.rows[0].availability_status
+            }
+        }
+        return { result: finalResult, role: getRole.rows[0].role };
+    }
+}
+
 export const bookingsServices = {
     createBookingIntoDB,
     getAllBookingsFromDB,
+    getUserBookingFromDB,
+    updateBookingIntoDB,
 }

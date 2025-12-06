@@ -17,7 +17,7 @@ app.use("/api/v1/auth", authRoutes)
 // users route
 app.use("/api/v1/users", usersRoute);
 // vehicles route
-app.use("/api/v1/vehicles", vehiclesRoutes)
+app.use("/api/v1/vehicles", vehiclesRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send(' Vehicle Rental System is running 🚗')

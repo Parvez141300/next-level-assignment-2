@@ -77,9 +77,40 @@ const updateVehicle = async (req: Request, res: Response) => {
     }
 }
 
+// delete a vehicle req and res handler
+const deleteVehicle = async (req: Request, res: Response) => {
+    const { vehicleId } = req.params;
+    const vId = parseInt(vehicleId as string);
+    try {
+        const result = await vehiclesServices.deleteVehicleFromDB(vId);
+        
+        if (result.rows.length > 0) {
+            return res.status(200).json({
+                success: true,
+                message: "Vehicle deleted successfully",
+            });
+        }
+        else{
+            return res.status(401).json({
+                success: false,
+                message: "failed to delete a vehicle",
+                errors: "Resource doesn't exist"
+            });
+        }
+    } catch (error: any) {
+        res.status(401).json({
+            success: false,
+            message: "Missing or invalid authentication token",
+            errors: error.message
+        })
+    }
+}
+
+
 export const vehiclesControllers = {
     createVehicle,
     getAllVehicles,
     getSingleVehicle,
-    updateVehicle
+    updateVehicle,
+    deleteVehicle,
 }

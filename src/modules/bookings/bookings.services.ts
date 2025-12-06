@@ -1,5 +1,6 @@
 import { pool } from "../../config/db"
 
+// create booking into db
 const createBookingIntoDB = async (payload: Record<string, unknown>) => {
     const { customer_id, vehicle_id, rent_start_date, rent_end_date } = payload;
 
@@ -38,6 +39,51 @@ const createBookingIntoDB = async (payload: Record<string, unknown>) => {
     return { ...result.rows[0], vehicle: { vehicle_name: vehicleResult.rows[0].vehicle_name, daily_rent_price: vehicleResult.rows[0].daily_rent_price } };
 }
 
+// get all booking from db
+const getAllBookingsFromDB = async () => {
+    const result = await pool.query(`
+        SELECT 
+        Bookings.id,
+        Bookings.customer_id,
+        Bookings.vehicle_id,
+        Bookings.rent_start_date,
+        Bookings.rent_end_date,
+        Bookings.total_price,
+        Bookings.status,
+
+        Users.name AS customer_name,
+        Users.email AS customer_email,
+
+        Vehicles.vehicle_name,
+        Vehicles.registration_number
+
+        FROM Bookings
+        INNER JOIN Users ON Bookings.customer_id = Users.id
+        INNER JOIN Vehicles ON Bookings.vehicle_id = Vehicles.id
+        `);
+
+        const formatted = result.rows.map(row => ({
+            id: row.id,
+            customer_id: row.customer_id,
+            vehicle_id: row.vehicle_id,
+            rent_start_date: row.rent_start_date,
+            rent_end_date: row.rent_end_date,
+            total_price: row.total_price,
+            status: row.status,
+            customer: {
+                name: row.customer_name,
+                email: row.customer_email
+            },
+            vehicle: {
+                vehicle_name: row.vehicle_name,
+                registration_number: row.registration_number
+            }
+        }))
+
+    return formatted;
+}
+
 export const bookingsServices = {
     createBookingIntoDB,
+    getAllBookingsFromDB,
 }

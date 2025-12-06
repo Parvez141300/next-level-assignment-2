@@ -4,7 +4,7 @@ import { usersServices } from "./users.services";
 // get all users req and res handle
 const getAllUsers = async (req: Request, res: Response) => {
     try {
-        const result = await usersServices.createUserIntoDB();
+        const result = await usersServices.getAllUsersFromDB();
         res.status(200).json({
             success: true,
             message: "Users retrieved successfully",

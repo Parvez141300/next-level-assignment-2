@@ -1,5 +1,6 @@
 import { pool } from "../../config/db";
 
+// create the vehicle into the db
 const createVehicleIntoDB = async (payload: Record<string, unknown>) => {
     const { vehicle_name, type, registration_number, daily_rent_price, availability_status } = payload;
 

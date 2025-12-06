@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { vehiclesServices } from "./vehicles.services";
 
+// create vehicle req and res handler
 const createVehicle = async (req: Request, res: Response) => {
     try {
         const result = await vehiclesServices.createVehicleIntoDB(req.body);

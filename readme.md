@@ -1,6 +1,6 @@
 Project Name: Vehicle Rental System
 
-Live URL:
+Live URL: https://next-level-assignment-2-steel.vercel.app
 
 Features:
 1. A User can register and login. And after login user get a token. By this token a user can access and do operation with the limited of his/her role like admin or customer.

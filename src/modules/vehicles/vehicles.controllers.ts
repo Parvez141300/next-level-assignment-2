@@ -82,8 +82,13 @@ const deleteVehicle = async (req: Request, res: Response) => {
     const { vehicleId } = req.params;
     const vId = parseInt(vehicleId as string);
     try {
-        const result = await vehiclesServices.deleteVehicleFromDB(vId);
-        
+        const result = await vehiclesServices.deleteVehicleFromDB(vId) as any;
+        if(result === null){
+            return res.status(400).json({
+                success: true,
+                message: "Vehicle cannot be delete because it's booked",
+            });
+        }
         if (result.rows.length > 0) {
             return res.status(200).json({
                 success: true,

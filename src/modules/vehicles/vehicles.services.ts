@@ -35,6 +35,10 @@ const updateVehicleIntoDB = async (payload: Record<string, unknown>, vehicleId: 
 // delete vehicle into db
 const deleteVehicleFromDB = async (vehicleId: number) => {
 
+    const vehicleResult = await pool.query(`SELECT * FROM Vehicles WHERE id=$1`, [vehicleId]);
+    if(vehicleResult.rows[0].availability_status === "booked"){
+        return null
+    }
     const result = await pool.query(`DELETE FROM Vehicles WHERE id=$1 RETURNING *`, [vehicleId]);
 
     return result;

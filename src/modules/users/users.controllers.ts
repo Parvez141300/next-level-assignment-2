@@ -53,13 +53,20 @@ const updateUser = async (req: Request, res: Response) => {
 const deleteUser = async (req: Request, res: Response) => {
     const uId = parseInt(req.params.userId as string);
     try {
-        const result = await usersServices.deleteUserFromDB(uId);
-        if (result.rows.length > 0) {
+        const result = await usersServices.deleteUserFromDB(uId) as any;
+        if (result === null){
+            res.status(400).json({
+                success: false,
+                message: "User booking is active so it cannot be deleted",
+            })
+        }
+        if (result?.rows?.length > 0) {
             res.status(200).json({
                 success: true,
                 message: "User deleted successfully",
             })
         }
+        
     } catch (error: any) {
         res.status(404).json({
             success: false,

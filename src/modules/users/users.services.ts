@@ -27,10 +27,20 @@ const updateUserIntoDB = async (payload: Record<string, unknown>, userId: number
 
 // delete user from db
 const deleteUserFromDB = async (userId: number) => {
-    const result = await pool.query(`DELETE FROM Users WHERE id=$1 RETURNING *`, [userId]);
+    const bookingResult = await pool.query(`SELECT * FROM Bookings WHERE customer_id=$1`, [userId]);
+    
+    const hasActive = bookingResult.rows.some(b => b.status === "active");
 
-    delete result.rows[0].password;
-    return result;
+    if (hasActive) {
+        return null;
+    }
+    else{
+        const result = await pool.query(`DELETE FROM Users WHERE id=$1 RETURNING *`, [userId]);
+
+        delete result.rows[0].password;
+        return result;
+    }
+
 }
 
 export const usersServices = {
